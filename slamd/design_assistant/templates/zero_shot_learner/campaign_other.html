@@ -1,0 +1,62 @@
+{% block content %}
+    {% from 'icons.html' import chatbot_icon, user_icon %}
+    <div class="chat_container">
+        <div class="bot_message_container d-flex gap-3 mx-auto">
+            {{ chatbot_icon(30, 30, "currentColor") }}
+            <div class="bot_message border rounded p-3 d-inline-block mb-4">
+                {{ form.campaign_form.other_field.label.text }}
+            </div>
+        </div>
+        <div class="chat_message_container d-flex justify-content-end gap-3 mx-auto">
+            <div class="chat_message border rounded p-3 d-inline-block">
+                <div id="other_option_container">
+                    {% for option in  form.campaign_form.other_field %}
+                        <div class="d-flex gap-4 justify-content-between">
+                            <div>{{ option.label.text }}</div>
+                            <input
+                                    type="checkbox"
+                                    name="other_option"
+                                    class="other_option"
+                                    value="{{ option.data }}"
+                                    {% if form.campaign_form.other_field.data is not none %}
+                                    disabled
+                                    {% endif %}
+                                    {% if option.checked %}
+                                    checked
+                                    {% endif %}/>
+                        </div>
+                    {% endfor %}
+                    {% if form.campaign_form.additional_other.data %}
+                    <div class="d-flex gap-4 justify-content-between">
+                        <div>{{ form.campaign_form.additional_other.data }}</div>
+                        <input
+                                type="checkbox"
+                                name="other_option"
+                                class="other_option"
+                                value="{{ form.campaign_form.additional_other.data }}"
+                                checked
+                                disabled/>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="d-flex mt-2 gap-2">
+                    <button class="btn btn-secondary"
+                            id="additional_other_button"
+                            {% if form.campaign_form.other_field.data is not none or form.campaign_form.additional_other.data %}
+                            disabled
+                            {% endif %}>
+                        Add other +
+                    </button>
+                    <button class="btn btn-primary" id="submit_other_button"
+                            {% if form.campaign_form.other_field.data or form.campaign_form.additional_other.data %}
+                            disabled
+                            {% endif %}>
+                        Submit
+                    </button>
+                </div>
+            </div>
+            {{ user_icon(30, 30, "currentColor") }}
+        </div>
+    </div>
+{% endblock %}
+              

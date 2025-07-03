@@ -1,0 +1,18 @@
+{
+  "material_name": "Example Liquid 2",
+  "material_type": "Liquid",
+  "co2_footprint": "5",
+  "costs": "5",
+  "delivery_time": "5",
+  "na2_si_o3": "5",
+  "na_o_h": "5",
+  "na2_si_o3_mol": "5",
+  "na_o_h_mol": "5",
+  "na2_o": "5",
+  "si_o2": "5",
+  "h2_o": "5",
+  "na2_o_mol": "5",
+  "si_o2_mol": "5",
+  "h2_o_mol": "5",
+  "submit": "6 - Save material"
+}

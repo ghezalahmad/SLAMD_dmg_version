@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<head>
+    <title>SLAMD - Materials Discovery</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width">
+</head>
+
+{% extends 'index.html' %}
+{% block content %}
+<main class="col-sm-12 col-md-12 col-lg-12 ml-sm-auto px-md-2 py-2 container">
+    <h3 id="dataset_to_add_targets_to" class="mt-3">{{ dataset_name }}</h3>
+    <div id="targets-placeholder">
+        {% include 'targets_form.html' %}
+    </div>
+</main>
+<script src="{{url_for('discovery.static', filename='targets.js')}}"></script>
+{%endblock%}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<head>
+    <title>SLAMD - Zero-shot prompting</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width"/>
+</head>
+{% extends 'index.html' %} {% block content %}
+<main class="mt-lg-2 ml-sm-auto px-md-2 py-2 container" style="height: 80%" id="chat-window-container">
+    <div class="row g-3 mb-3 justify-content-end align-items-center">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed explanation-header" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
+                        data-bs-parent="#accordion-discovery-explanation">
+                    Show / hide design assistant explanation
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                <div class="accordion-body explanation-body" role="tooltip">
+                    The design assistant can be used for creating new materials in a step-by-step fashion or for predicting
+                    new materials. Note that the latter is experimental. It uses GenAI to find high-quality formulations.<br>
+                    Note that you have a free tier for using the zero-shot assistant. When it is exhausted you need to pass
+                    your own Open AI Token in the field below.
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+            {{ form.token_form.token(class_="form-control", placeholder="Insert you Open AI Token here") }}
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+            <button id="delete_session_button" class="btn btn-danger form-control" data-bs-toggle="tooltip" data-bs-placement="bottom" title="When resetting the conversation you need to insert your key again.">Reset conversation</button>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mb-4">
+        <progress id="chat_progress" style="width: 100%; height: 20px" value={{ progress }} {% if form.new_project_form %} max="17" {% else %} max="10" {% endif %}></progress>
+    </div>
+    <div id="chat_window" class="p-4 h-100" style="overflow-y: auto">
+        {{ form.csrf_token }}
+        <div id="task_selection_container" class="mb-4">{% include 'task.html' %}</div>
+        <div id="material_type_container" class="mb-4">
+            {% if form.material_type_form is not none %}
+            {% include 'campaign_material_type.html' %}
+            {% endif %}
+        </div>
+        <div id="data_creation_container">
+            <div id="powder_name_container" class="mb-4">
+                {% if form.new_project_form and form.material_type_form %}
+                    {% if form.material_type_form.material_type_field.data %}
+                        {% include 'data_creation/powder_name.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="powder_costs_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if form.new_project_form.create_powder_form.name_field.data %}
+                        {% include 'data_creation/powder_costs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div> 
+            <div id="powder_oxide_composition_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if  progress >= 4 %}
+                        {% include 'data_creation/powder_oxide_composition.html' %}
+                    {% endif %}
+                {% endif %}
+            </div> 
+            <div id="powder_structural_composition_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if progress >= 5 %}
+                        {% include 'data_creation/powder_structural_composition.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="liquid_name_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if progress >= 6 %}
+                        {% include 'data_creation/liquid_name.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="liquid_costs_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if progress >= 7 %}
+                        {% include 'data_creation/liquid_costs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="liquid_oxide_composition_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_powder_form %}
+                    {% if progress >= 8 %}
+                        {% include 'data_creation/liquid_oxide_composition.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="aggregate_name_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_liquid_form %}
+                    {% if progress >= 9 %}
+                        {% include 'data_creation/aggregate_name.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="aggregate_costs_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_liquid_form %}
+                    {% if progress >= 10 %}
+                        {% include 'data_creation/aggregate_costs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="aggregate_composition_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_liquid_form %}
+                    {% if progress >= 11 %}
+                        {% include 'data_creation/aggregate_composition.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="admixture_name_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_aggregate_form %}
+                    {% if progress >= 12 %}
+                        {% include 'data_creation/admixture_name.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="admixture_costs_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_aggregate_form %}
+                    {% if progress >= 13 %}
+                        {% include 'data_creation/admixture_costs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="process_name_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_admixture_form %}
+                    {% if progress >= 14 %}
+                        {% include 'data_creation/process_name.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="process_costs_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_admixture_form %}
+                    {% if progress >= 15 %}
+                        {% include 'data_creation/process_costs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="process_information_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_admixture_form %}
+                    {% if progress >= 16 %}
+                        {% include 'data_creation/process_information.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div id="data_creation_formulation_container" class="mb-4">
+                {% if form.new_project_form and form.new_project_form.create_process_form %}
+                    {% if progress >= 17 %}
+                        {% include 'data_creation/formulation.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div id="campaign_container">
+            <div id="design_targets_container" class="mb-4">
+                {% if form.new_project_form is none and form.material_type_form %}
+                    {% if form.material_type_form.material_type_field.data %}
+                        {% include 'zero_shot_learner/campaign_design_targets.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+                <div id="design_targets_values_container" class="mb-4">
+                    {% if form.campaign_form is not none and form.campaign_form.design_targets %}
+                        {% include 'zero_shot_learner/campaign_design_targets_values.html' %}
+                    {% endif %}
+                </div>
+            <div id="powders_container" class="mb-4">
+                {% if form.campaign_form is not none and form.campaign_form.design_targets %}
+                        {% if form.campaign_form.design_targets[0].design_target_value_field.data %}
+                    {% include 'zero_shot_learner/campaign_select_powders.html' %}
+                        {% endif %}
+                {% endif %}
+            </div>
+            <div id="liquids_container" class="mb-4">
+                {% if form.campaign_form is not none and form.campaign_form.select_powders_field.data %}
+                {% include 'zero_shot_learner/campaign_liquids.html' %}
+                {% endif %}
+            </div>
+            <div id="other_container" class="mb-4">
+                {% if form.campaign_form is not none and (form.campaign_form.liquids_field.data or
+                form.campaign_form.additional_liquid.data) %}
+                {% include 'zero_shot_learner/campaign_other.html' %}
+                {% endif %}
+            </div>
+            <div id="comment_container" class="mb-4">
+                {% if form.campaign_form is not none and (form.campaign_form.other_field.data or
+                form.campaign_form.additional_other.data) %}
+                {% include 'zero_shot_learner/comment.html' %}
+                {% endif %}
+            </div>
+            <div id="design_knowledge_container" class="mb-4">
+                {% if form.campaign_form is not none and form.campaign_form.comment_field.data %}
+                {% include 'zero_shot_learner/design_knowledge.html' %}
+                {% endif %}
+                </div>
+            <div id="formulation_container" class="mb-4">
+                {% if form.campaign_form is not none and form.campaign_form.design_knowledge_field.data %}
+                {% include 'zero_shot_learner/formulation.html' %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+<script type="module" src="{{ url_for('design_assistant.static', filename='design_assistant.js') }}"></script>
+{% endblock %}

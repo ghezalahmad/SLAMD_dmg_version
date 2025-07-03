@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<head>
+    <title>SLAMD - Blended Materials</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width">
+</head>
+
+{% extends 'index.html' %}
+{% block content %}
+<main class="col-sm-12 col-md-12 col-lg-12 ml-sm-auto px-md-2 py-2 container">
+    {% include 'blending_form.html' %}
+    <div id="materials-table-placeholder">
+        {% include 'materials_table.html' %}
+    </div>
+</main>
+<script src="{{url_for('blended_materials.static', filename='materials.js')}}"></script>
+<script src="{{url_for('blended_materials.static', filename='blended_materials_utils.js')}}"></script>
+<script src="{{url_for('blended_materials.static', filename='blended_materials.js')}}"></script>
+{%endblock%}

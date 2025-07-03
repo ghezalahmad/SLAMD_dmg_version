@@ -1,0 +1,35 @@
+<h3 class="mt-3">New material / process</h3>
+<form action="" method="post" novalidate>
+    {{ form.csrf_token }}
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            {{ form.material_name.label(class_="control-label") }}
+            {{ form.material_name(class_="form-control mb-3", placeholder="Cannot be empty") }}
+
+            {{ form.material_type.label(class_="control-label") }}
+            {{ form.material_type(class_="form-control form-select mb-3") }}
+        </div>
+        <div class="col-md-6 rounded bg-white align-self-center" role="tooltip">
+            <h3 class="explanation-header">How to create new base materials</h3>
+            <div class="explanation-body">
+                <p>
+                    Select the material type or process you want to create. Depending on your selection, specific input
+                    forms will appear to capture properties for your material / process. While it is possible to enter
+                    cost information for all types (including CO₂ footprint and delivery time), the composition /
+                    process information is specific to a particular material type / process. Custom properties that
+                    further specify your material / process can be added additionally.
+                </p>
+                <b>Warning:</b> It is recommended to use Chrome, Edge or another Chromium-based browser for this page,
+                as Firefox allows invalid values to be entered.
+            </div>
+        </div>
+    </div>
+
+    <h5>Properties</h5>
+    <div id="material-type-form-placeholder">
+        {% include 'material_type_form.html' %}
+    </div>
+    {{ form.submit(class_="btn btn-primary col-12 my-3", data_bs_toggle="tooltip", data_bs_placement="bottom",
+    title="Select at least a name and a type")
+    }}
+</form>

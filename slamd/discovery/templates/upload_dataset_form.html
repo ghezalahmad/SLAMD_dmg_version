@@ -1,0 +1,22 @@
+{% from 'show_form_field_errors.html' import show_form_field_errors -%}
+<form action="/materials/discovery" method="post" enctype="multipart/form-data" novalidate>
+    {{ upload_dataset_form.csrf_token }}
+    <div class="row g-3 mb-3 align-items-end">
+        <div class="col-sm-12 col-md-9 col-lg-10">
+            {{ upload_dataset_form.dataset.label(class_="control-label") }}
+            {{ upload_dataset_form.dataset(class_="form-control form-select dataset-input") }}
+        </div>
+        <div class="col-12 col-md-3 col-lg-2">
+            {{ upload_dataset_form.upload_button(class_="btn btn-success col-12") }}
+        </div>
+    </div>
+    <div class="col-12 mb-3 rounded align-self-center" role="tooltip">
+        <h3 class="explanation-header">CSV formatting</h3>
+        <div class="explanation-body">
+            The column separator of the CSV file is automatically detected. You must use either "," or ";".
+            If you use "," as column separator you must use "." as decimal point. If you use ";" as
+            column separator you must use "," as decimal point.
+        </div>
+    </div>
+    {{ show_form_field_errors(upload_dataset_form.dataset) }}
+</form>
