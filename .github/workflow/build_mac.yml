@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13  # Use macos-13 for Apple Silicon compatibility
+    runs-on: macos-13
 
     steps:
     - name: Checkout code
@@ -25,16 +25,10 @@ jobs:
         pip install py2app
         pip install -r requirements.txt
 
-    - name: Remove old build artifacts
+    - name: Clean build directories
       run: |
         rm -rf build dist
 
-    - name: Build app with py2app
+    - name: Build app
       run: |
         python setup.py py2app
-
-    - name: Archive built app
-      uses: actions/upload-artifact@v4
-      with:
-        name: SLAMD-macOS-app
-        path: dist/SLAMD.app
