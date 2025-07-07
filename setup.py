@@ -17,17 +17,10 @@ DATA_FILES = [
 OPTIONS = {
     'argv_emulation': True,
     'iconfile': 'slamd.icns',
-    'packages': [
-        'flask', 'jinja2', 'py4j', 'lolopy',
-        'werkzeug', 'pandas', 'numpy', 'scipy',
-        'sklearn', 'plotly', 'wtforms'
-    ],
-    'excludes': [
-        'PyQt5', 'PyQt5.QtWebEngine', 'PyQt6',
-        'PyQt6.QtWebEngine', 'PySide2', 'PySide6',
-        'tkinter', 'wx', 'PyInstaller.hooks.hook-PyQt5.QtWebEngine'
-    ]
+    'packages': ['flask', 'jinja2', 'py4j', 'lolopy', 'werkzeug', 'pandas', 'numpy', 'scipy', 'sklearn', 'plotly'],
+    'excludes': ['PyQt6', 'PyQt5', 'PyInstaller'],
 }
+
 
 
 setup(

@@ -29,14 +29,14 @@ jobs:
       run: |
         rm -rf build dist
 
-    - name: Build app (clean run)
+    - name: Build app
       run: |
-        rm -rf build dist
         python setup.py py2app
 
 
-    - name: Upload .app as artifact
+    - name: Upload SLAMD app bundle
       uses: actions/upload-artifact@v4
       with:
         name: SLAMD-macOS-app
         path: dist/SLAMD.app
+
