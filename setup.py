@@ -25,12 +25,23 @@ RESOURCES = [os.path.join(*d.split('/')) for d in RESOURCE_DIRS]
 
 OPTIONS = {
     'argv_emulation': True,
-    'iconfile': 'slamd.icns',  # optional, only if you want a custom app icon
-    'includes': ['encodings', 'idna.idnadata'],
+    'iconfile': 'slamd.icns',
     'packages': ['flask', 'jinja2', 'py4j', 'lolopy', 'werkzeug', 'pandas', 'numpy', 'scipy', 'sklearn', 'plotly'],
     'excludes': ['PyQt6', 'PyQt5', 'PyInstaller'],
-    'resources': RESOURCES,
+    'resources': RESOURCE_DIRS,
+    'optimize': 1,
+    'includes': ['encodings', 'idna.idnadata'],
+    'plist': {
+        'CFBundleName': 'SLAMD',
+        'CFBundleDisplayName': 'SLAMD',
+        'CFBundleGetInfoString': "SLAMD for MacOS",
+        'CFBundleIdentifier': 'com.slamd.app',
+        'CFBundleVersion': '0.1.0',
+        'CFBundleShortVersionString': '0.1.0',
+        'NSPrincipalClass': 'NSApplication',
+    },
 }
+
 
 setup(
     app=APP,

@@ -27,16 +27,18 @@ jobs:
 
     - name: Clean build directories
       run: |
-        rm -rf build dist
+        rm -rf build dist *.egg-info
 
     - name: Build app
       run: |
         python setup.py py2app
 
+    - name: Zip app bundle
+      run: |
+        cd dist && zip -r SLAMD.app.zip SLAMD.app
 
-    - name: Upload SLAMD app bundle
+    - name: Upload zipped .app bundle
       uses: actions/upload-artifact@v4
       with:
-        name: SLAMD-macOS-app
-        path: dist/SLAMD.app
-
+        name: SLAMD-macOS-App
+        path: dist/SLAMD.app.zip
