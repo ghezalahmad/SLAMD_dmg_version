@@ -13,8 +13,13 @@ from slamd.materials.processing.base_materials_controller import base_materials
 from slamd.materials.processing.blended_materials_controller import blended_materials
 from slamd.design_assistant.processing.design_assistant_controller import design_assistant
 
-def create_app(env=None, with_session=True):
-    app = Flask(__name__)
+def create_app(env=None, with_session=True, template_folder=None, static_folder=None):
+    # ✅ Allow template/static override for bundled app
+    app = Flask(
+        __name__,
+        template_folder=template_folder or 'slamd/templates',
+        static_folder=static_folder or 'slamd/static'
+    )
     CORS(app)
 
     # Load configuration
@@ -24,7 +29,6 @@ def create_app(env=None, with_session=True):
     if not app.config.get('SECRET_KEY'):
         print('[WARN] SECRET_KEY missing or empty — setting default fallback')
         app.config['SECRET_KEY'] = 'slamd-default-key'
-
 
     if with_session:
         Session(app)
@@ -49,4 +53,3 @@ def create_app(env=None, with_session=True):
     app.register_error_handler(422, handle_422)
 
     return app
-
