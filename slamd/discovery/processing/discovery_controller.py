@@ -90,14 +90,28 @@ def create_a_priori_information_configuration_form():
 
 @discovery.route('/<dataset>', methods=['POST'])
 def run_experiment(dataset):
-    request_body = json.loads(request.data)
-    dataframe, scatter_plot = DiscoveryService.run_experiment(dataset, request_body)
-    html_dataframe = dataframe.to_html(index=False,
-                                       table_id='formulations_dataframe',
-                                       classes='table table-bordered table-striped table-hover topscroll-table')
+    try:
+        request_body = json.loads(request.data)
+        print("🔍 SLAMD DEBUG - Received request body:")
+        print(json.dumps(request_body, indent=2))
 
-    body = {'template': render_template('experiment_result.html', df=html_dataframe, scatter_plot=scatter_plot)}
-    return make_response(jsonify(body), 200)
+        dataframe, scatter_plot = DiscoveryService.run_experiment(dataset, request_body)
+
+        html_dataframe = dataframe.to_html(index=False,
+                                           table_id='formulations_dataframe',
+                                           classes='table table-bordered table-striped table-hover topscroll-table')
+
+        body = {'template': render_template('experiment_result.html',
+                                            df=html_dataframe,
+                                            scatter_plot=scatter_plot)}
+        return make_response(jsonify(body), 200)
+
+    except Exception as e:
+        print("❌ SLAMD ERROR in run_experiment():", str(e))
+        import traceback; traceback.print_exc()
+        return make_response(jsonify({'error': str(e)}), 500)
+
+
 
 
 @discovery.route('/<dataset>/download', methods=['GET'])

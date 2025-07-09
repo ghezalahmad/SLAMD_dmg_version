@@ -1,3 +1,4 @@
+import numpy as np
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel
 from sklearn.decomposition import PCA
@@ -9,6 +10,7 @@ from slamd.discovery.processing.experiment.mlmodel.tuned_gaussian_process_regres
 from slamd.discovery.processing.experiment.mlmodel.tuned_random_forest import TunedRandomForest
 from slamd.discovery.processing.experiment.experiment_model import ExperimentModel
 import os
+
 
 # Ensure Lolo jar path is available for lolopy
 os.environ['LOLO_JAR_PATH'] = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'libs', 'lolo-0.7.3.jar')
@@ -22,8 +24,39 @@ class MLModelFactory:
         Initialize the model given by the user. Return a sklearn Regressor.
         The model must be one of the entries defined in ExperimentModel.
         """
+      
         if exp.model == ExperimentModel.RANDOM_FOREST.value:
+            logger.info("🧪 Preprocessing data for Lolo Random Forest")
+
+            # Use only rows where target is not null
+            index_labelled = exp.targets_df.index[exp.targets_df[exp.target_names[0]].notnull()]
+            X_df = exp.features_df.loc[index_labelled]
+            y_series = exp.targets_df.loc[index_labelled, exp.target_names[0]]
+
+            logger.info(f"🧾 Features shape: {X_df.shape}, Target shape: {y_series.shape}")
+            logger.info(f"🔍 Feature dtypes:\n{X_df.dtypes}")
+
+            if X_df.isnull().values.any() or y_series.isnull().values.any():
+                raise ValueError("❌ Dataset contains NaN values. Lolo cannot proceed.")
+
+            try:
+                X_np = X_df.astype(np.float64).to_numpy()
+                y_np = y_series.astype(np.float64).to_numpy()
+            except Exception as e:
+                logger.error("❌ Data type conversion failed", exc_info=True)
+                raise ValueError(f"Failed to convert data to float64: {e}")
+
+            # Inject into experiment so SlamdRandomForest can use it
+            exp.X_np = X_np
+            exp.y_np = y_np
+
+            logger.info("✅ Data ready for Lolo Random Forest")
+
+            # ✅ IMPORTANT: pass the experiment object here
             regressor = SlamdRandomForest()
+
+
+
         elif exp.model == ExperimentModel.GAUSSIAN_PROCESS.value:
             # Hyperparameters from previous implementation of the app (Jupyter notebook).
             kernel = ConstantKernel(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2))
@@ -52,3 +85,14 @@ class MLModelFactory:
             raise ValueNotSupportedException(message=f'Invalid model: {exp.model}')
 
         return regressor
+
+
+import logging
+logger = logging.getLogger(__name__)
+
+def initialize_model(experiment):
+    logger.info(f"🚀 Initializing model: {experiment.regressor}")
+    if experiment.regressor == 'random_forest':
+        from lolopy.learners import RandomForestRegressor
+        logger.info("✅ RandomForestRegressor from lolopy triggered.")
+        return SlamdRandomForest()
